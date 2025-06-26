@@ -28,7 +28,7 @@ const WhatsAppWidget = () => {
               Hi there! How can we help you today?
             </p>
             <a
-              href="https://wa.me/15551234567?text=Hi%20Uniq%20HR,%20I%20would%20like%20to%20know%20more%20about%20your%20services"
+              href="https://wa.me/+919025094907?text=Hi%20Uniq%20HR,%20I%20would%20like%20to%20know%20more%20about%20your%20services"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors w-full block text-center"

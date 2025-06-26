@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Upload, CheckCircle, User, Mail, Phone, MapPin, Briefcase, GraduationCap } from 'lucide-react';
+import { Upload, CheckCircle, User, Mail, Briefcase, GraduationCap } from 'lucide-react';
 import { motion } from 'framer-motion';
-
+import Banner from '../components/Banner';
+import { database } from '../firebase';
+import { ref, set, push } from 'firebase/database';
 const JobSeekerPortal = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -33,25 +35,37 @@ const JobSeekerPortal = () => {
     }
   };
 
+  const toBase64 = (file: File) => new Promise<string | ArrayBuffer | null>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Save to localStorage (in real app, this would be sent to backend)
-    const candidates = JSON.parse(localStorage.getItem('candidates') || '[]');
-    const newCandidate = {
-      id: Date.now(),
-      ...formData,
-      submittedAt: new Date().toISOString()
-    };
-    candidates.push(newCandidate);
-    localStorage.setItem('candidates', JSON.stringify(candidates));
-    
-    setLoading(false);
-    setSubmitted(true);
+
+    try {
+      let resumeBase64 = null;
+      if (formData.resume) {
+        resumeBase64 = await toBase64(formData.resume);
+      }
+
+      const profilesRef = ref(database, 'profiles');
+      const newProfileRef = push(profilesRef);
+      await set(newProfileRef, {
+        ...formData,
+        resume: resumeBase64,
+        submittedAt: new Date().toISOString()
+      });
+      setLoading(false);
+      setSubmitted(true);
+      window.scrollTo(0, 0);
+    } catch (error) {
+      console.error("Error submitting profile: ", error);
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -93,21 +107,11 @@ const JobSeekerPortal = () => {
   return (
     <div className="pt-20 min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <br></br>
-      {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Job Seeker Portal</h1>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              Take the first step towards your dream career. Submit your profile and let our experts connect you with the perfect opportunity.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <Banner 
+        title="Job Seeker Portal"
+        subtitle="Take the first step towards your dream career. Submit your profile and let our experts connect you with the perfect opportunity."
+        imageUrl="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop"
+      />
 
       {/* Form Section */}
       <section className="py-16">

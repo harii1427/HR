@@ -1,43 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Target, Eye, Award, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { database } from '../firebase';
+import { ref, onValue } from 'firebase/database';
+
+interface TeamMember {
+  name: string;
+  role: string;
+  image: string;
+  bio: string;
+}
+
+interface Milestone {
+  year: string;
+  event: string;
+}
 
 const About = () => {
-  const teamMembers = [
-    {
-      name: 'Sarah Johnson',
-      role: 'Founder & CEO',
-      image: 'https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&w=400',
-      bio: '15+ years in executive recruitment and talent strategy'
-    },
-    {
-      name: 'Michael Chen',
-      role: 'Head of Talent Acquisition',
-      image: 'https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=400',
-      bio: 'Specializes in tech and finance sector placements'
-    },
-    {
-      name: 'Emily Rodriguez',
-      role: 'Senior HR Consultant',
-      image: 'https://images.pexels.com/photos/3760266/pexels-photo-3760266.jpeg?auto=compress&cs=tinysrgb&w=400',
-      bio: 'Expert in organizational development and culture'
-    },
-    {
-      name: 'David Thompson',
-      role: 'Career Coach',
-      image: 'https://images.pexels.com/photos/3760280/pexels-photo-3760280.jpeg?auto=compress&cs=tinysrgb&w=400',
-      bio: 'Certified career coach with 10+ years experience'
-    }
-  ];
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [milestones, setMilestones] = useState<Milestone[]>([]);
 
-  const milestones = [
-    { year: '2020', event: 'UniqHR founded with a vision to revolutionize recruitment' },
-    { year: '2021', event: 'Reached 500 successful placements and expanded to 3 cities' },
-    { year: '2022', event: 'Launched digital platform and AI-powered matching system' },
-    { year: '2023', event: 'Partnered with 100+ companies and achieved 98% success rate' },
-    { year: '2024', event: 'Opened new offices and expanded internationally' },
-    { year: '2025', event: 'Leading the future of HR consulting with innovative solutions' }
-  ];
+  useEffect(() => {
+    const teamRef = ref(database, 'team');
+    onValue(teamRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setTeamMembers(data);
+      }
+    });
+
+    const milestonesRef = ref(database, 'milestones');
+    onValue(milestonesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setMilestones(data);
+      }
+    });
+  }, []);
 
   return (
     <div className="pt-20">
@@ -209,47 +208,56 @@ const About = () => {
         </div>
       </section>
 
-      {/* Timeline */}
-      <section className="py-20 bg-gradient-to-br from-blue-900 to-indigo-900 text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold mb-4">Our Journey</h2>
-            <p className="text-blue-200 text-lg">Key milestones in our growth story</p>
-          </motion.div>
+     <section className="py-20 bg-gradient-to-br from-blue-900 to-indigo-900 text-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          {/* Responsive font size for the heading */}
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Journey</h2>
+          <p className="text-blue-200 text-lg">Key milestones in our growth story</p>
+        </motion.div>
 
-          <div className="relative">
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-blue-400"></div>
-            
-            {milestones.map((milestone, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                className={`relative flex items-center mb-12 ${
-                  index % 2 === 0 ? 'justify-start' : 'justify-end'
-                }`}
+        <div className="relative">
+          {/* The Timeline Line: Positioned left on mobile, center on large screens */}
+          <div className="absolute top-0 h-full w-1 bg-blue-400 left-4 transform lg:left-1/2 lg:-translate-x-1/2"></div>
+          
+          {milestones.map((milestone, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }} // Universal animation for mobile & desktop
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: index * 0.2 }}
+              viewport={{ once: true }}
+              // Base flex layout for mobile, alternating justification for large screens
+              className={`relative flex items-center mb-12 ${
+                index % 2 === 0 ? '' : 'lg:justify-end'
+              }`}
+            >
+              {/* Content Block: Full width on mobile, half-width on large screens */}
+              <div
+                className={`w-full lg:w-5/12 p-6 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm
+                  ${
+                    index % 2 === 0
+                      ? 'ml-10 lg:ml-0 lg:pr-8 lg:text-right' // Left item on desktop
+                      : 'ml-10 lg:mr-0 lg:pl-8 lg:text-left'  // Right item on desktop
+                  }`}
               >
-                <div className={`w-5/12 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
-                  <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
-                    <div className="text-2xl font-bold text-blue-300 mb-2">{milestone.year}</div>
-                    <p className="text-gray-200">{milestone.event}</p>
-                  </div>
-                </div>
-                
-                <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-400 rounded-full border-4 border-blue-900"></div>
-              </motion.div>
-            ))}
-          </div>
+                <div className="text-2xl font-bold text-blue-300 mb-2">{milestone.year}</div>
+                <p className="text-gray-200">{milestone.event}</p>
+              </div>
+              
+              {/* The Timeline Dot: Positioned left on mobile, center on large screens */}
+              <div className="absolute left-4 transform -translate-x-1/2 w-4 h-4 bg-blue-400 rounded-full border-4 border-blue-900 lg:left-1/2"></div>
+            </motion.div>
+          ))}
         </div>
-      </section>
+      </div>
+    </section>
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import { app } from '../firebase';
 import { Menu, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Logo from '../assets/Logo.png';
@@ -9,19 +11,26 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [scrollDirection, setScrollDirection] = useState('up');
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [user, setUser] = useState<import('firebase/auth').User | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const auth = getAuth(app);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, [auth]);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
-      // Determine scroll direction
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setScrollDirection('down');
       } else {
         setScrollDirection('up');
       }
-      
       setScrolled(currentScrollY > 50);
       setLastScrollY(currentScrollY);
     };
@@ -34,15 +43,22 @@ const Header = () => {
     { name: 'Home', path: '/' },
     { name: 'About Us', path: '/about' },
     { name: 'Job Seeker Portal', path: '/job-seeker' },
-    { name: 'HR Connect', path: '/hr-connect' },
+    // { name: 'HR Connect', path: '/hr-connect' },
     { name: 'Blog', path: '/blog' },
     { name: 'Contact', path: '/contact' },
   ];
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out: ', error);
+    }
+  };
+
   return (
-    <motion.header
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center"
-    >
+    <motion.header className="fixed top-0 left-0 right-0 z-50 flex justify-center">
       <motion.div
         animate={{
           width: scrolled ? 'auto' : '100%',
@@ -53,56 +69,68 @@ const Header = () => {
           scrolled ? 'bg-white/95 backdrop-blur-sm shadow-lg' : 'bg-transparent'
         }`}
       >
-        <nav className="container mx-auto">
+        <nav className="container mx-auto px-4">
           <motion.div
             animate={{
-              justifyContent: scrolled ? 'center' : 'space-between',
-              paddingLeft: scrolled ? '2rem' : '1rem',
-              paddingRight: scrolled ? '2rem' : '1rem',
-              gap: scrolled ? '2rem' : '0rem',
+              paddingLeft: scrolled ? '1.5rem' : '0.5rem',
+              paddingRight: scrolled ? '1.5rem' : '0.5rem',
             }}
-            // transition={{ duration: 0.5, ease: 'easeInOut' }}
-            className="flex items-center h-[80px]"
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
+            className="flex items-center justify-between h-[80px]"
           >
-            <div>
+            {/* Logo on far left */}
+            <div className="flex-shrink-0 w-36">
               <Link to="/" className="flex items-center">
                 <img
                   src={Logo}
                   alt="UniqHR Logo"
-                  className="h-12"
+                  className="h-12 object-contain"
                 />
               </Link>
             </div>
 
-            {/* Desktop Navigation */}
-            <motion.div layout className="hidden lg:flex items-center space-x-8">
-              {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`transition-all duration-300 hover:text-blue-600 text-base whitespace-nowrap ${
-                    location.pathname === item.path
-                      ? 'text-blue-600 font-semibold'
-                      : 'text-gray-900'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </motion.div>
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className={`lg:hidden p-2 rounded-md transition-colors ${
-                scrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-gray-900 hover:bg-gray-100'
-              }`}
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
+            {/* Navigation + Mobile toggle on far right */}
+            <div className="flex items-center space-x-4">
+              <motion.div layout className="hidden lg:flex items-center space-x-6">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`transition-all duration-300 hover:text-blue-600 text-base whitespace-nowrap ${
+                      location.pathname === item.path
+                        ? 'text-blue-600 font-semibold'
+                        : 'text-gray-900'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+                {user && (
+                  <Link
+                    to="/admindashboard"
+                    className={`transition-all duration-300 hover:text-blue-600 text-base whitespace-nowrap ${
+                      location.pathname === '/admindashboard'
+                        ? 'text-blue-600 font-semibold'
+                        : 'text-gray-900'
+                    }`}
+                  >
+                    Admin
+                  </Link>
+                )}
+                {user && (
+                  <button onClick={handleLogout} className="text-gray-900 hover:text-blue-600">Logout</button>
+                )}
+              </motion.div>
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="lg:hidden p-2 rounded-md transition-colors text-gray-900 hover:bg-gray-100"
+              >
+                {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+            </div>
           </motion.div>
 
-          {/* Mobile Navigation */}
+          {/* Mobile navigation dropdown */}
           <motion.div
             initial={false}
             animate={{ height: isOpen ? 'auto' : 0 }}
@@ -123,6 +151,22 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
+              {user && (
+                <Link
+                  to="/admindashboard"
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-3 py-2 rounded-md transition-colors ${
+                    location.pathname === '/admindashboard'
+                      ? 'text-blue-600 bg-blue-50 font-semibold'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  Admin
+                </Link>
+              )}
+              {user && (
+                <button onClick={() => { handleLogout(); setIsOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Logout</button>
+              )}
             </div>
           </motion.div>
         </nav>

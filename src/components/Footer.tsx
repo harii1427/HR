@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from 'lucide-react';
+import Logo from '../assets/Logo.png';
 
 const Footer = () => {
   return (
@@ -9,10 +10,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg">
-                <Users className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl font-bold">TalentBridge HR</span>
+              <span className="text-xl font-bold">UNIQHR</span>
             </div>
             <p className="text-gray-300">
               Connecting talent with opportunity through professional HR consulting services.
@@ -36,7 +34,7 @@ const Footer = () => {
               <li><Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link></li>
               <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">About Us</Link></li>
               <li><Link to="/job-seeker" className="text-gray-300 hover:text-white transition-colors">Job Seeker Portal</Link></li>
-              <li><Link to="/hr-connect" className="text-gray-300 hover:text-white transition-colors">HR Connect</Link></li>
+              <li><Link to="/blog" className="text-gray-300 hover:text-white transition-colors">Blog</Link></li>
             </ul>
           </div>
 
@@ -55,22 +53,22 @@ const Footer = () => {
             <div className="space-y-3 text-gray-300">
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <span>+91 90250 94907</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span>info@talentbridgehr.com</span>
+                <span>info@uniqhr.com</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4" />
-                <span>123 Business Ave, Suite 100</span>
+                <span>Coimbatore</span>
               </div>
             </div>
           </div>
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-300">
-          <p>&copy; 2025 TalentBridge HR. All rights reserved.</p>
+          <p>&copy; 2025 UNIQHR. All rights reserved.</p>
         </div>
       </div>
     </footer>

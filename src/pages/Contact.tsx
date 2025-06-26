@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Banner from '../components/Banner';
+import Map from '../components/Map';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -38,21 +40,11 @@ const Contact = () => {
   return (
     <div className="pt-20">
       <br></br>
-      {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Get in Touch</h1>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              Ready to find your next great hire or take the next step in your career? We're here to help.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <Banner 
+        title="Get in Touch"
+        subtitle="Ready to find your next great hire or take the next step in your career? We're here to help."
+        imageUrl="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop"
+      />
 
       {/* Contact Section */}
       <section className="py-16 bg-gradient-to-br from-slate-50 to-blue-50">
@@ -263,7 +255,7 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Map Section */}
+      {/* Map Section
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -275,7 +267,7 @@ const Contact = () => {
           >
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Visit Our Office</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Located in the heart of New York's business district, our office is easily accessible by public transportation.
+              Located in the heart of Coimbatore, our office is easily accessible.
             </p>
           </motion.div>
 
@@ -284,60 +276,13 @@ const Contact = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="rounded-2xl overflow-hidden shadow-xl"
+            className="rounded-2xl overflow-hidden shadow-xl h-96"
           >
-            <div className="bg-gray-200 h-96 flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 text-lg">Interactive Map</p>
-                <p className="text-gray-500">123 Business Avenue, Suite 100</p>
-                <p className="text-gray-500">New York, NY 10001</p>
-                <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
-                  Get Directions
-                </button>
-              </div>
-            </div>
+            <Map />
           </motion.div>
         </div>
-      </section>
+      </section> */}
 
-      {/* Social Media Links */}
-      <section className="py-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-2xl font-bold mb-4">Connect With Us</h2>
-            <p className="text-blue-100 mb-8">Follow us on social media for the latest updates and career tips</p>
-            <div className="flex justify-center space-x-6">
-              <a
-                href="#"
-                className="bg-white/20 hover:bg-white/30 p-3 rounded-lg transition-colors"
-                aria-label="Facebook"
-              >
-                <div className="w-6 h-6 bg-white rounded"></div>
-              </a>
-              <a
-                href="#"
-                className="bg-white/20 hover:bg-white/30 p-3 rounded-lg transition-colors"
-                aria-label="Instagram"
-              >
-                <div className="w-6 h-6 bg-white rounded"></div>
-              </a>
-              <a
-                href="#"
-                className="bg-white/20 hover:bg-white/30 p-3 rounded-lg transition-colors"
-                aria-label="LinkedIn"
-              >
-                <div className="w-6 h-6 bg-white rounded"></div>
-              </a>
-            </div>
-          </motion.div>
-        </div>
-      </section>
     </div>
   );
 };
