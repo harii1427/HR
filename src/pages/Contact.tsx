@@ -23,18 +23,32 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setLoading(false);
-    setSubmitted(true);
-    
-    // Reset form after showing success message
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({ name: '', email: '', company: '', subject: '', message: '' });
-    }, 3000);
+
+    try {
+      const response = await fetch('https://uniqhr-server.onrender.com/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+        setTimeout(() => {
+          setSubmitted(false);
+          setFormData({ name: '', email: '', company: '', subject: '', message: '' });
+        }, 3000);
+      } else {
+        // Handle server errors or invalid responses
+        alert('Failed to send message. Please try again later.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('An error occurred. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -113,7 +127,7 @@ const Contact = () => {
                 <div className="mt-8 pt-8 border-t border-gray-200">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Contact</h3>
                   <a
-                    href="https://wa.me/15551234567?text=Hi%20Uniq%20HR,%20I%20would%20like%20to%20know%20more%20about%20your%20services"
+                    href="https://wa.me/+919025094907?text=Hi%20Uniq%20HR,%20I%20would%20like%20to%20know%20more%20about%20your%20services"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors inline-flex items-center"

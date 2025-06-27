@@ -52,19 +52,35 @@ const JobSeekerPortal = () => {
         resumeBase64 = await toBase64(formData.resume);
       }
 
+      const submissionData = {
+        ...formData,
+        resume: resumeBase64,
+      };
+
+      // First, save to Firebase
       const profilesRef = ref(database, 'profiles');
       const newProfileRef = push(profilesRef);
       await set(newProfileRef, {
-        ...formData,
-        resume: resumeBase64,
+        ...submissionData,
         submittedAt: new Date().toISOString()
       });
+
+      // Then, send email notification
+      await fetch('https://uniqhr-server.onrender.com/submit-profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
+      });
+
       setLoading(false);
       setSubmitted(true);
       window.scrollTo(0, 0);
     } catch (error) {
       console.error("Error submitting profile: ", error);
       setLoading(false);
+      alert('An error occurred while submitting your profile. Please try again later.');
     }
   };
 
