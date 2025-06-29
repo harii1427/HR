@@ -150,7 +150,8 @@ const Home = () => {
               </p>
               
               {/* MODIFICATION: Added `items-center` to center buttons horizontally on mobile view (`flex-col`) */}
-<div className="flex flex-row gap-4 mb-8 justify-center sm:justify-start items-center flex-wrap">
+<div className="flex flex-row gap-4 mb-8 justify-center sm:justify-center md:justify-center lg:justify-start items-center flex-wrap">
+
   <Link
     to="/job-seeker"
     className="w-40 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center group shadow-lg text-xs sm:text-sm sm:w-auto sm:px-6 sm:py-4 sm:text-base"
@@ -165,8 +166,10 @@ const Home = () => {
     HR Professionals
   </Link>
 </div>
-<div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl mx-auto px-4 sm:px-6 lg:px-0">
-  <ScrollingText />
+<div className="w-full max-w-[100vw] px-4 sm:px-6 lg:px-0 overflow-x-hidden">
+  <div className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl mx-auto">
+    <ScrollingText />
+  </div>
 </div>
             </motion.div>
 
