@@ -40,12 +40,16 @@ const Footer = () => {
 
           <div>
             <h3 className="text-lg font-semibold mb-4">Services</h3>
-            <ul className="space-y-2 text-gray-300">
-              <li>Executive Search</li>
-              <li>Talent Acquisition</li>
-              <li>HR Consulting</li>
-              <li>Career Guidance</li>
-            </ul>
+<ul className="space-y-2 text-gray-300">
+  {["Executive Search", "Talent Acquisition", "HR Consulting", "Career Guidance"].map((item) => (
+    <li key={item}>
+      <a href="/job-seeker" className="hover:underline">
+        {item}
+      </a>
+    </li>
+  ))}
+</ul>
+
           </div>
 
           <div>
@@ -69,6 +73,12 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-300">
           <p>&copy; 2025 UNIQHR. All rights reserved.</p>
+          <div className="flex justify-center items-center mt-4">
+            <p className="text-gray-300 mr-2">Powered by</p>
+            <a href="https://qwat.in/" target="_blank" rel="noopener noreferrer">
+              <img src="https://qwat.in/static/media/QWAT.67fc4ebe979fba1f87d9.png" alt="Qwat Logo" className="h-8" />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
